@@ -3,11 +3,18 @@ const express = require('express')
 const path = require('path')
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
+const authorRouter = require('./routes/authorRouter')
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/authors', authorRouter);
 const validRoutes = ['home', 'about', 'contact'];
+
+app.use((err, req, res, next) => {
+    console.log(err);
+    res.status(err.statusCode || 500).send(err);
+})
 
 app.get(['/', '/:page'], (req, res) => {
     const page = req.params.page || 'home';
